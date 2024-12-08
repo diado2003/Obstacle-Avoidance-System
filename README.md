@@ -1,7 +1,7 @@
 # Obstacle-Avoidance-System
 
 Piese utilizate:
--3 LED-URI: verde, rosu, galben
+#-3 LED-URI: verde, rosu, galben
 -senzor ultrasonic
 -buzzer
 -rezistente LED
