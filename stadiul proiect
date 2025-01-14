@@ -1,0 +1,53 @@
+Stadiul actual al implementării software
+Proiectul Obstacle-Avoidance-System este într-un stadiu avansat, având următoarele componente software funcționale:
+
+Controlul LED-urilor în funcție de distanța detectată:
+LED verde: drum liber
+LED galben: obstacol apropiat
+LED roșu: risc de coliziune
+Controlul motoarelor pentru oprire automată în caz de risc de coliziune.
+Măsurarea și afișarea distanței în timp real utilizând un senzor ultrasonic.
+Integrarea unui buzzer pentru avertizare sonoră în cazul detectării unui obstacol periculos.
+Funcționalități în dezvoltare:
+
+Extinderea cu un display LCD pentru afișarea în timp real a distanței.
+Adăugarea unui al doilea senzor ultrasonic pentru detectarea laterală și manevre automate de evitare.
+Motivația alegerii bibliotecilor
+NewPing: Simplifică utilizarea senzorului ultrasonic prin abstractizarea măsurătorilor de distanță, asigurând performanțe superioare și reducerea latenței.
+
+LiquidCrystal: Gestionarea afișajului LCD, ușor de integrat și foarte popular în comunitatea Arduino.
+Wire: Permite comunicarea I2C între componentele hardware, esențială pentru integrarea eficientă a senzorilor și altor module.
+
+Elementul de noutate al proiectului
+Utilizarea a două senzori ultrasonici pentru detectarea atât frontală, cât și laterală, permițând o strategie de evitare complexă.
+Implementarea unui algoritm personalizat de evitare a obstacolelor bazat pe prioritizarea direcțiilor sigure.
+Integrarea unui sistem de avertizare multi-senzorial (LED-uri + buzzer + LCD), oferind feedback clar și în timp real.
+Justificarea utilizării funcționalităților din laborator
+Senzor ultrasonic: Experimentat pentru detecția distanței cu precizie, folosind scenarii reale.
+Controlul LED-urilor: Testat în laborator pentru diferite niveluri de sensibilitate la distanță.
+Controlul motoarelor: Validat prin manevre de oprire și schimbare a direcției.
+
+Scheletul proiectului și validarea funcționalităților
+Structură:
+
+Main loop: Monitorizează distanța și activează funcționalitățile corespunzătoare.
+Module independente: Fiecare componentă (LED, buzzer, motoare) are funcții dedicate pentru control.
+
+Interacțiune:
+Senzorul ultrasonic transmite distanța.
+Decizia este procesată și semnalele sunt transmise către LED-uri, buzzer și motoare.
+
+Validare:
+Teste de distanță cu obstacole reale.
+Verificarea răspunsului în diverse scenarii (ex. obstacol apropiat, drum liber).
+Feedback-ul sistemului comparat cu valorile măsurate efectiv.
+
+Calibrarea elementelor de senzoristică
+Senzorul ultrasonic a fost calibrat utilizând un set de măsurători la distanțe cunoscute.
+Pragurile pentru LED-uri au fost ajustate manual în funcție de scenarii reale.
+Validarea buzzerului prin testarea nivelelor sonore în funcție de distanță.
+
+Optimizări realizate
+Reducerea latenței în procesarea semnalelor senzorului ultrasonic prin folosirea librăriei NewPing.
+Organizarea modulară a codului pentru a permite extinderea facilă.
+Reglarea consumului de energie prin optimizarea perioadei de scanare a senzorilor.
