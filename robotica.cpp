@@ -17,15 +17,19 @@ const int yellowLedPin = 3;
 const int greenLedPin = 4;
 
 // DC motor pin
-const int motorPin = 7;
+const int motorPin = 8;
+
+// Buzzer pin
+const int buzzerPin = 7;
 
 // Number of samples for averaging
 const int numSamples = 10;
 
 // Function Prototypes
 int calculateDistance();
+int calculateSmoothedDistance();
 void displayDistance(int distance);
-void controlLEDs(int distance);
+void controlLEDsAndBuzzer(int distance);
 void controlDCMotor(int distance);
 
 void setup() {
@@ -47,16 +51,19 @@ void setup() {
 
   // Configure motor pin
   pinMode(motorPin, OUTPUT);
+
+  // Configure buzzer pin
+  pinMode(buzzerPin, OUTPUT);
 }
 
 void loop() {
-  int distance = calculateDistance();
+  int distance = calculateSmoothedDistance();
   Serial.print("Distance: ");
   Serial.print(distance);
   Serial.println(" cm");
 
   displayDistance(distance);
-  controlLEDs(distance);
+  controlLEDsAndBuzzer(distance);
   controlDCMotor(distance);
 
   delay(100); // Delay for stability
@@ -74,6 +81,7 @@ int calculateDistance() {
   return duration / 29 / 2; // Convert duration to distance in cm
 }
 
+// Calculate a smoothed (averaged) distance
 int calculateSmoothedDistance() {
   long totalDistance = 0;
 
@@ -85,7 +93,6 @@ int calculateSmoothedDistance() {
   return totalDistance / numSamples; // Return the average distance
 }
 
-
 // Display the distance on the 7-segment display
 void displayDistance(int distance) {
   if (distance <= maxCount) {
@@ -94,23 +101,26 @@ void displayDistance(int distance) {
   }
 }
 
-// Control the LEDs based on the distance
-void controlLEDs(int distance) {
+// Control the LEDs and buzzer based on the distance
+void controlLEDsAndBuzzer(int distance) {
   if (distance < 10) {
-    // Object is too close: Red LED ON
+    // Object is too close: Red LED and buzzer ON
     digitalWrite(redLedPin, HIGH);
     digitalWrite(yellowLedPin, LOW);
     digitalWrite(greenLedPin, LOW);
+    digitalWrite(buzzerPin, HIGH); // Turn the buzzer ON
   } else if (distance >= 10 && distance < 50) {
     // Object is somewhat close: Yellow LED ON
     digitalWrite(redLedPin, LOW);
     digitalWrite(yellowLedPin, HIGH);
     digitalWrite(greenLedPin, LOW);
+    digitalWrite(buzzerPin, LOW); // Turn the buzzer OFF
   } else {
     // Path is clear: Green LED ON
     digitalWrite(redLedPin, LOW);
     digitalWrite(yellowLedPin, LOW);
     digitalWrite(greenLedPin, HIGH);
+    digitalWrite(buzzerPin, LOW); // Turn the buzzer OFF
   }
 }
 
