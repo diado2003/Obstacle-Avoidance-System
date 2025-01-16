@@ -89,18 +89,24 @@ void controlLEDsAndBuzzer(int distance) {
     digitalWrite(yellowLedPin, LOW);
     digitalWrite(greenLedPin, LOW);
     digitalWrite(buzzerPin, HIGH); // Turn the buzzer ON
+    lcd.setCursor(1, 1);
+    lcd.print("Franeaza");
   } else if (distance >= 10 && distance < 50) {
     // Object is somewhat close: Yellow LED ON
     digitalWrite(redLedPin, LOW);
     digitalWrite(yellowLedPin, HIGH);
     digitalWrite(greenLedPin, LOW);
     digitalWrite(buzzerPin, LOW); // Turn the buzzer OFF
+    lcd.setCursor(1, 1);
+    lcd.print("Apropiere");
   } else {
     // Path is clear: Green LED ON
     digitalWrite(redLedPin, LOW);
     digitalWrite(yellowLedPin, LOW);
     digitalWrite(greenLedPin, HIGH);
     digitalWrite(buzzerPin, LOW); // Turn the buzzer OFF
+    lcd.setCursor(1, 1);
+    lcd.print("Drum liber");
   }
 }
 
