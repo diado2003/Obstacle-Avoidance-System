@@ -1,11 +1,6 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_LEDBackpack.h>
-
-// 7-segment display setup
-Adafruit_7segment matrix = Adafruit_7segment();
-const int maxCount = 9999;
+#include <LiquidCrystal_I2C.h>
 
 // Ultrasonic sensor pins
 const int trigPin = 5;
@@ -16,29 +11,28 @@ const int redLedPin = 2;
 const int yellowLedPin = 3;
 const int greenLedPin = 4;
 
-// DC motor pin
-const int motorPin = 8;
-
 // Buzzer pin
 const int buzzerPin = 7;
 
 // Number of samples for averaging
 const int numSamples = 10;
 
-// Function Prototypes
-int calculateDistance();
-int calculateSmoothedDistance();
-void displayDistance(int distance);
-void controlLEDsAndBuzzer(int distance);
-void controlDCMotor(int distance);
+// Maximum count for distance display
+const int maxCount = 9999;
+
+// LCD (I2C address - adjust based on your setup)
+LiquidCrystal_I2C lcd(0x27, 16, 2); // Use 0x27 or 0x3F depending on your I2C address
 
 void setup() {
   Serial.begin(9600);
 
-  // Initialize 7-segment display
-  matrix.begin(0x70);
-  matrix.println(0);
-  matrix.writeDisplay();
+  // Initialize LCD
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("System Ready");
+  delay(2000);
+  lcd.clear();
 
   // Configure ultrasonic sensor pins
   pinMode(trigPin, OUTPUT);
@@ -49,24 +43,8 @@ void setup() {
   pinMode(yellowLedPin, OUTPUT);
   pinMode(greenLedPin, OUTPUT);
 
-  // Configure motor pin
-  pinMode(motorPin, OUTPUT);
-
   // Configure buzzer pin
   pinMode(buzzerPin, OUTPUT);
-}
-
-void loop() {
-  int distance = calculateSmoothedDistance();
-  Serial.print("Distance: ");
-  Serial.print(distance);
-  Serial.println(" cm");
-
-  displayDistance(distance);
-  controlLEDsAndBuzzer(distance);
-  controlDCMotor(distance);
-
-  delay(100); // Delay for stability
 }
 
 // Calculate distance using the ultrasonic sensor
@@ -81,6 +59,7 @@ int calculateDistance() {
   return duration / 29 / 2; // Convert duration to distance in cm
 }
 
+
 // Calculate a smoothed (averaged) distance
 int calculateSmoothedDistance() {
   long totalDistance = 0;
@@ -93,12 +72,13 @@ int calculateSmoothedDistance() {
   return totalDistance / numSamples; // Return the average distance
 }
 
-// Display the distance on the 7-segment display
-void displayDistance(int distance) {
-  if (distance <= maxCount) {
-    matrix.println(distance);
-    matrix.writeDisplay();
-  }
+// Display the distance on the LCD
+void displayDistanceOnLCD(int distance) {
+  lcd.setCursor(0, 0);
+  lcd.print("Distance:       "); // Overwrite existing text
+  lcd.setCursor(10, 0);
+  lcd.print(distance);
+  lcd.print(" cm");
 }
 
 // Control the LEDs and buzzer based on the distance
@@ -124,11 +104,17 @@ void controlLEDsAndBuzzer(int distance) {
   }
 }
 
-// Control the DC motor based on distance
-void controlDCMotor(int distance) {
-  if (distance < 10) {
-    analogWrite(motorPin, 0); // Stop the motor if too close
-  } else {
-    analogWrite(motorPin, 255); // Run the motor at full speed otherwise
-  }
+
+void loop() {
+  int distance = calculateSmoothedDistance();
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  displayDistanceOnLCD(distance);
+  controlLEDsAndBuzzer(distance);
+
+  delay(100); // Delay for stability
 }
+
+
